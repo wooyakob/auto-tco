@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, url_for, render_template, jsonify
-from google.cloud import storage
+from google.cloud import storage, documentai_v1beta3 as documentai
 import os
 import vertexai
 from vertexai.generative_models import GenerativeModel, SafetySetting
@@ -15,6 +15,12 @@ bucket = storage_client.bucket(bucket_name)
 vertexai.init(project="tco-automation-430318", location="us-central1")
 model = GenerativeModel("gemini-1.5-flash-001")
 
+# Initialize Document AI
+project_id = 'tco-automation-430318'
+location = 'us'
+processor_id = '1646373740d5d523'
+documentai_client = documentai.DocumentProcessorServiceClient()
+
 # Store results temporarily
 results = {}
 
@@ -29,8 +35,17 @@ def upload_file():
         blob = bucket.blob(file.filename)
         blob.upload_from_file(file)
 
-        # Redirect to the results page (update with the actual file name)
-        return redirect(url_for('show_results', filename=file.filename))
+        # Process the PDF with Document AI
+        name = f'projects/{project_id}/locations/{location}/processors/{processor_id}'
+        gcs_document = {"gcs_uri": f'gs://{bucket_name}/{file.filename}', "mime_type": "application/pdf"}
+        request = documentai.types.ProcessRequest(name=name, raw_document=gcs_document)
+        result = documentai_client.process_document(request=request)
+
+        # Extract structured data
+        extracted_text = result.document.text
+
+        # Redirect to the results page with the extracted text
+        return redirect(url_for('show_results', filename=file.filename, extracted_text=extracted_text))
     return 'Invalid file format. Please upload a PDF.', 400
 
 @app.route('/process_extracted_text', methods=['POST'])
