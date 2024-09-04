@@ -4,12 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload AWS Invoice</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script>
+        function updateFileName() {
+            const fileInput = document.getElementById('file');
+            const fileName = fileInput.files[0] ? fileInput.files[0].name : 'Choose a file';
+            const label = document.querySelector('label[for="file"]');
+            label.textContent = fileName;
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+    </script>
 </head>
 <body>
-    <h1>Upload AWS Invoice</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="application/pdf" required>
-        <button type="submit">Upload</button>
-    </form>
+    <div class="container">
+        <h1>Upload AWS Invoice</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="showLoading()">
+            <input type="file" name="file" id="file" accept="application/pdf" required onchange="updateFileName()">
+            <label for="file"><i class="fas fa-upload"></i> Choose a file</label>
+            <button type="submit">Upload</button>
+        </form>
+        <div id="loading" style="display:none;">
+            <i class="fas fa-spinner fa-spin"></i> Processing your invoice, please wait...
+        </div>
+        {% if response_text %}
+        <div id="response">
+            <h2>Cost Assessment</h2>
+            <p>{{ response_text }}</p>
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>
