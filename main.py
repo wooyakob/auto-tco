@@ -54,7 +54,7 @@ def process_document(bucket_name, object_name):
     request = {"name": processor_name, "document": document}
     
     try:
-        result = client.process_document(request=request)
+        result = client.process_document(request=request, timeout=3600)
         document = result.document
      
         prompt_text = f"Perform a cost assessment using Google Cloud Platform pricing data for the following Amazon Web Services invoice text:\n\n{document.text}. Always provide a total estimated cost and list of equivalent services, usage and costs associated with them."
