@@ -2,7 +2,7 @@ from flask import Flask, request, redirect, url_for, render_template, jsonify
 from google.cloud import documentai_v1beta3, storage
 from google.cloud import documentai
 from google.api_core.client_options import ClientOptions
-from typing import Optional
+from typing import Optional, Sequence
 import os
 import json
 
