@@ -54,6 +54,14 @@ def quickstart(
     df = pd.DataFrame(entities_data)
     print(df)
 
+    df.to_csv('entities_data.csv', index=False)
+    df.to_excel('entities_data.xlsx', index=False)
+    
+    json_data = df.to_json(orient='records')
+    print(json_data)
+
+    return df
+
 if __name__ == "__main__":
     print("Script is starting...") 
     quickstart(project_id, location, file_path, processor_name)
