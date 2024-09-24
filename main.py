@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, render_template, jsonify
+"""from flask import Flask, request, redirect, url_for, render_template, jsonify
 from google.cloud import documentai_v1beta3, storage
 from google.cloud import documentai
 from google.api_core.client_options import ClientOptions
@@ -128,4 +128,4 @@ def generate_cost_assessment(prompt_text):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port)"""
