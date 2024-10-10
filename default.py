@@ -36,8 +36,10 @@ def quickstart(
 
     document = result.document
 
-    print("The document contains the following text:")
+    #print("The document contains the following text:")
+    print(document)
     #print(document.text)
+    #print(document.entities)
     
     #for entity in document.entities:
         #print(f"Type: {entity.type_}, Mention Text: {entity.mention_text}, Confidence: {entity.confidence}")
@@ -52,13 +54,13 @@ def quickstart(
 
     # Create DataFrame
     df = pd.DataFrame(entities_data)
-    print(df)
+    #print(df)
 
     df.to_csv('entities_data.csv', index=False)
     df.to_excel('entities_data.xlsx', index=False)
     
     json_data = df.to_json(orient='records')
-    print(json_data)
+    #print(json_data)
 
     return df
 

@@ -1,4 +1,4 @@
-"""from flask import Flask, request, redirect, url_for, render_template, jsonify
+from flask import Flask, request, redirect, url_for, render_template, jsonify
 from google.cloud import documentai_v1beta3, storage
 from google.cloud import documentai
 from google.api_core.client_options import ClientOptions
@@ -10,6 +10,7 @@ import vertexai
 from vertexai.generative_models import GenerativeModel, Part, SafetySetting, FinishReason
 import vertexai.generative_models as generative_models
 import re
+
 
 
 app = Flask(__name__)
@@ -63,13 +64,35 @@ def process_document(bucket_name, object_name):
         #print(document.entities)
         print(document.text)
 
-        prompt_text = f"Take a deep breath and carefully review the following {document.text}, which contains detailed invoice data from Amazon Web Services, including services, usage, and associated costs.\n\nYour task is to conduct a cloud cost assessment by identifying equivalent Google Cloud Platform services that match the usage described. Using the latest pricing data available to you, provide an estimated grand total and a detailed breakdown of the GCP services, usage, and corresponding costs that make up this total.\n\nDo not include any disclaimers, assumptions, or recommendations to consult additional documentation. Simply present the estimated total and the list of equivalent services, usage, and their respective costs, without phrases like 'assuming similar usage.'"
+        prompt_text = f"Take a deep breath and carefully review the following {document.text}, which contains detailed invoice data from Amazon Web Services, including services, usage, and associated costs.\n\nYour task is to conduct a cloud cost assessment by identifying equivalent Google Cloud Platform services that match the usage described. Using the latest pricing data available to you, provide an estimated grand total and a detailed breakdown of the GCP services, usage, and corresponding costs that make up this total.\n\nDo not include any disclaimers, assumptions, or recommendations to consult additional documentation. Simply present the estimated total and the list of equivalent services, usage, and their respective costs, without phrases like 'assuming similar usage. We know its not entirely accurate but provide your best possible estimate and don't add any disclaimers.'"
         response_text = generate_cost_assessment(prompt_text)
         return response_text
         
     except Exception as e:
         print(f"Error processing document: {e}")
         return f"Error processing document: {e}"
+    
+
+"""entities_data = []
+for entity in document.entities:
+    entities_data.append({
+        "Type": entity.type_,
+        "Mention Text": entity.mention_text,
+        "Confidence": entity.confidence
+    })
+
+# Create DataFrame
+df = pd.DataFrame(entities_data)
+#print(df)
+
+df.to_csv('entities_data.csv', index=False)
+df.to_excel('entities_data.xlsx', index=False)
+
+json_data = df.to_json(orient='records')
+#print(json_data)
+
+return df
+"""
     
 def clean_text(text):
     # Remove #, ##, |, *, and **
@@ -81,7 +104,7 @@ def clean_text(text):
 
 def generate_cost_assessment(prompt_text):
     vertexai.init(project="tco-automation-430318", location="us-central1")
-    model = GenerativeModel("gemini-1.5-flash-001")
+    model = GenerativeModel("gemini-1.5-flash-002")
     
     generation_config = {
         "max_output_tokens": 8192,
@@ -128,4 +151,4 @@ def generate_cost_assessment(prompt_text):
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
-    app.run(host='0.0.0.0', port=port)"""
+    app.run(host='0.0.0.0', port=port)
