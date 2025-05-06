@@ -1,0 +1,2 @@
+# auto-tco
+Using Document AI API and custom processor with schema fields I defined to extract structured data from Cloud invoices, starting with Amazon Web Services invoices. F1 Score of current processor is 0.943. It extracts all schema fields with a 1.0 confidence level.
